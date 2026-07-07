@@ -25,4 +25,4 @@ ENV PORT=8080
 EXPOSE 8080
 
 # Comando para rodar a aplicação
-CMD ["uv", "run", "uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8080"]
+CMD sh -c "uvicorn api.main:app --host 0.0.0.0 --port ${PORT:-8080}"
