@@ -18,14 +18,15 @@ async def lifespan(app: FastAPI):
         os.path.dirname(__file__), "..", "models", "modelo_imoveis.pkl"
     )
     # DESAFIO 6: Descomente o bloco abaixo para carregar o modelo treinado na inicialização da API
-    # try:
-    #     with open(caminho_modelo, "rb") as f:
-    #         ml_models["modelo_imoveis"] = pickle.load(f)
-    #     print(f"Modelo carregado com sucesso de {caminho_modelo}")
-    # except FileNotFoundError:
-    #     print(
-    #         f"AVISO: Modelo não encontrado em {caminho_modelo}. Execute o notebook de treinamento primeiro!"
-    #     )
+    try:
+        with open(caminho_modelo, "rb") as f:
+            ml_models["modelo_imoveis"] = pickle.load(f)
+
+        print(f"Modelo carregado com sucesso de {caminho_modelo}")
+    except FileNotFoundError:
+        print(
+            f"AVISO: Modelo não encontrado em {caminho_modelo}. Execute o notebook de treinamento primeiro!"
+        )
 
     yield  # O aplicativo serve requisições aqui
 
@@ -74,10 +75,10 @@ async def predict_price(imovel: ImovelInput):
         return ImovelOutput(preco_sugerido=0, preco_minimo=0, preco_maximo=0)
 
     # DESAFIO 7: Descomente as linhas abaixo para extrair o modelo e as features
-    # rf_model = modelo_dict["model"]
-    # features_esperadas = modelo_dict["features"]
-    # rmse = modelo_dict["rmse_teste"]
-    
+    rf_model = modelo_dict["model"]
+    features_esperadas = modelo_dict["features"]
+    rmse = modelo_dict["rmse_teste"]
+
     features_esperadas = ["area_m2", "quartos", "banheiros", "vagas", "idade_anos"]
 
     # 2. Preparamos os dados de entrada no formato (DataFrame) que o scikit-learn espera
@@ -96,14 +97,14 @@ async def predict_price(imovel: ImovelInput):
 
     # Garantindo a ordem correta das colunas (mesmas do treinamento)
     # DESAFIO 8: Descomente a linha abaixo para alinhar as colunas com as que o modelo espera
-    # input_df = input_df[features_esperadas]
+    input_df = input_df[features_esperadas]
 
     # 3. Fazendo a previsão
     # DESAFIO 9: Descomente as linhas abaixo para fazer a previsão com o modelo
-    # preco_previsto = rf_model.predict(input_df)[0]
-    # preco_minimo = max(0, preco_previsto - rmse)
-    # preco_maximo = preco_previsto + rmse
-    
+    preco_previsto = rf_model.predict(input_df)[0]
+    preco_minimo = max(0, preco_previsto - rmse)
+    preco_maximo = preco_previsto + rmse
+
     # Valores temporários enquanto o desafio não for feito
     preco_previsto = 0
     preco_minimo = 0
